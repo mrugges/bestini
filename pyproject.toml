@@ -2,15 +2,21 @@
 name = "bestini"
 version = "0.1.0"
 description = ""
-authors = ["Mr Ugge <mrugges@gmail.com>"]
+authors = ["mrugges <mrugges@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.13,<3.14"
+python = "^3.11"
 icecream = "^2.1.3"
-pyqt6 = "^6.7.1"
-pyinstaller = "^6.10.0"
+python-dotenv = "^1.0.1"
+pydantic = "^2.8.2"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+pytest-watch = "^4.2.0"
+black = "^24.8.0"
+hypothesis = "^6.111.1"
 
 [build-system]
 requires = ["poetry-core"]
