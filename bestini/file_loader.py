@@ -1,8 +1,18 @@
-from bestini.config import config
 import glob
-from icecream import ic
 import re
+import os
 from collections import defaultdict
+from bestini.models import Bot
+
+from icecream import ic
+
+from bestini.config import config
+
+import redis
+
+
+class RedisConnection:
+    r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
 
 
 class FileLoader:
@@ -15,15 +25,12 @@ class FileLoader:
 
     ini_path = config["INI_PATH"] or "tests/data/*"
 
-    bots = {}
-
-    def parse(self):
+    def parse(self) -> list[Bot]:
 
         files = glob.glob(pathname=self.ini_path)
-        ic(files)
+        bots = []
         for file in files:
-            bot_name = file.split("/")[-1].split("_")[0]
-            ic(file)
+            bot = Bot(name=file)
             with open(file, encoding="utf-8-sig") as f:
                 section, option, action, gem = None, None, None, None
                 for line in f.readlines():
@@ -39,9 +46,10 @@ class FileLoader:
                                 self.patterns["gem"], option_matches[2]
                             )
                             if gem_matches:
-                                gem = gem_matches[3]
-                                self.bots.update(
-                                    {bot_name: {"gems": {gem: [{"section": section}]}}}
-                                )
+                                gem = int(gem_matches[3])
+                                bot.gems[gem] += [option]
+                                bot.spells += []
 
-            ic(self.bots)
+            bots += [bot]
+        ic(bots)
+        return bots
